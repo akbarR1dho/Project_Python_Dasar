@@ -1,0 +1,5 @@
+id,nm_tamu,no_kamar,total_harga,checkin,checkout,status
+1,Ridho gans,K002,900000,2025-12-02,2025-12-05,checkedout
+2,Ridho hayyuk,K005,7200000,2025-12-02,2025-12-14,checkedout
+5,Ilham (ilmu hitam),K010,6000000,2025-12-02,2025-12-07,checkedin
+6,Goku,K009,12000000,2025-12-02,2025-12-12,checkedin
