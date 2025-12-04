@@ -7,7 +7,7 @@ TABEL_RESERVASI = "tbl_reservasi.csv"
 
 def buat_reservasi():
     data_kamar = pd.read_csv("tbl_kamar.csv", delimiter=",")
-    filter_kamar = data_kamar.query("Status == 'tersedia'")
+    filter_kamar = data_kamar.query("status == 'tersedia'")
 
     print("\n" + "="*60)
     print("🏨  DAFTAR KAMAR YANG TERSEDIA  🏨".center(60))
@@ -17,7 +17,7 @@ def buat_reservasi():
 
     while True:
         no_kamar = input("🔢 Masukkan no kamar: ").upper()
-        if no_kamar in filter_kamar["No Kamar"].values:
+        if no_kamar in filter_kamar["no_kamar"].values:
             break
         else:
             print("❌ Kamar tidak ditemukan.")
@@ -25,26 +25,26 @@ def buat_reservasi():
     
     nm_tamu     = input("👤 Masukkan nama tamu: ")
     jml_hari    = int(input("📅 Masukkan jumlah hari: "))
-    total_harga = data_kamar[data_kamar["No Kamar"] == no_kamar]["Harga Perhari"].values[0] * jml_hari
+    total_harga = data_kamar[data_kamar["no_kamar"] == no_kamar]["harga_perhari"].values[0] * jml_hari
     checkin     = dt.datetime.now().strftime("%Y-%m-%d")
     checkout    = (dt.datetime.now() + dt.timedelta(days=jml_hari)).strftime("%Y-%m-%d")
-    Status      = "checkedin"
+    status      = "checkedin"
 
     data_reservasi = pd.read_csv(TABEL_RESERVASI, delimiter=",")
     id_reservasi   = 1 if data_reservasi.empty else data_reservasi["id"].max() + 1
 
     with open(TABEL_RESERVASI, mode="a", newline="") as file_reservasi:
         writer = csv.writer(file_reservasi, delimiter=",")
-        writer.writerow([id_reservasi, nm_tamu, no_kamar, total_harga, checkin, checkout, Status])
+        writer.writerow([id_reservasi, nm_tamu, no_kamar, total_harga, checkin, checkout, status])
 
-    data_kamar.loc[data_kamar["No Kamar"] == no_kamar, "Status"] = "ditempati"
+    data_kamar.loc[data_kamar["no_kamar"] == no_kamar, "status"] = "ditempati"
     data_kamar.to_csv(TABEL_KAMAR, index=False, sep=",")
         
     print("✔️ Reservasi berhasil dibuat!")
 
 def checkout_reservasi():
     data_reservasi   = pd.read_csv(TABEL_RESERVASI, delimiter=",")
-    filter_reservasi = data_reservasi.query("Status == 'checkedin'")
+    filter_reservasi = data_reservasi.query("status == 'checkedin'")
     
     print("\n📋  DAFTAR TAMU CHECK-IN  📋")
     print(filter_reservasi.to_string(index=False))
@@ -57,12 +57,12 @@ def checkout_reservasi():
             print("❌ Reservasi tidak ditemukan.")
             continue
 
-    data_reservasi.loc[data_reservasi["id"] == id_reservasi, "Status"] = "checkedout"
+    data_reservasi.loc[data_reservasi["id"] == id_reservasi, "status"] = "checkedout"
     data_reservasi.to_csv(TABEL_RESERVASI, index=False, sep=",")
 
-    no_kamar   = data_reservasi[data_reservasi["id"] == id_reservasi]["No Kamar"].values[0]
+    no_kamar   = data_reservasi[data_reservasi["id"] == id_reservasi]["no_kamar"].values[0]
     data_kamar = pd.read_csv(TABEL_KAMAR, delimiter=",")
-    data_kamar.loc[data_kamar["No Kamar"] == no_kamar, "Status"] = "tersedia"
+    data_kamar.loc[data_kamar["no_kamar"] == no_kamar, "status"] = "tersedia"
     data_kamar.to_csv(TABEL_KAMAR, index=False, sep=",")
 
     print("✔️ Checkout berhasil dilakukan!")
@@ -97,22 +97,22 @@ def tampilkan_history():
             print("\n" + "="*78)
             print("🛏️  TAMU YANG SEDANG MENGINAP".center(78))
             print("="*78)
-            checkedin = data_reservasi.query("Status == 'checkedin'")
+            checkedin = data_reservasi.query("status == 'checkedin'")
             if checkedin.empty:
                 print("❗ Tidak ada tamu yang sedang menginap.")
             else:
-                print(checkedin.to_string(index=False))
+                print(checkedin[["id", "nm_tamu", "no_kamar", "total_harga", "status"]].to_string(index=False))
                 print("="*78)
 
         elif pilih_tampilan == 3:
             print("\n" + "="*73)
             print("🧾  RIWAYAT CHECKOUT".center(78))
             print("="*73)
-            checkedout = data_reservasi.query("Status == 'checkedout'")
+            checkedout = data_reservasi.query("status == 'checkedout'")
             if checkedout.empty:
                 print("❗ Tidak ada riwayat checkout.")
             else:
-                print(checkedout.to_string(index=False))
+                print(checkedout[["id", "nm_tamu", "no_kamar", "total_harga", "status"]].to_string(index=False))
                 print("="*73)
 
         elif pilih_tampilan == 4:
