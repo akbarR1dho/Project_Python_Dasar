@@ -75,7 +75,7 @@ def checkout_reservasi():
 
     print("✔️ Checkout berhasil dilakukan!")
 
-def tampilkan_history():
+def reservasi_history():
     data_reservasi = pd.read_csv(TABEL_RESERVASI, delimiter=",")
 
     if data_reservasi.empty:
@@ -182,7 +182,7 @@ while True:
         checkout_reservasi()
 
     elif pilih_aksi == 4:
-        tampilkan_history()
+        reservasi_history()
 
     elif pilih_aksi == 5:
         print("👋 Terima kasih telah menggunakan program ini!")
