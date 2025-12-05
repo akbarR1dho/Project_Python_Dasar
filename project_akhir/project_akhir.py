@@ -9,6 +9,10 @@ def buat_reservasi():
     data_kamar = pd.read_csv("tbl_kamar.csv", delimiter=",")
     filter_kamar = data_kamar.query("status == 'tersedia'")
 
+    if filter_kamar.empty:
+        print("❗ Tidak ada kamar yang tersedia.")
+        return
+
     print("\n" + "="*60)
     print("🏨  DAFTAR KAMAR YANG TERSEDIA  🏨".center(60))
     print("="*60)
@@ -45,6 +49,10 @@ def buat_reservasi():
 def checkout_reservasi():
     data_reservasi   = pd.read_csv(TABEL_RESERVASI, delimiter=",")
     filter_reservasi = data_reservasi.query("status == 'checkedin'")
+
+    if filter_reservasi.empty:
+        print("❗ Tidak ada tamu yang sedang menginap.")
+        return
     
     print("\n📋  DAFTAR TAMU CHECK-IN  📋")
     print(filter_reservasi.to_string(index=False))
@@ -70,6 +78,10 @@ def checkout_reservasi():
 def tampilkan_history():
     data_reservasi = pd.read_csv(TABEL_RESERVASI, delimiter=",")
 
+    if data_reservasi.empty:
+        print("⚠️ Belum ada data reservasi.")
+        return
+
     while True:
         print("\n" + "="*40)
         print("📜   RIWAYAT RESERVASI   📜".center(40))
@@ -87,11 +99,8 @@ def tampilkan_history():
             print("\n" + "="*78)
             print("📂 SEMUA RESERVASI".center(78))
             print("="*78)
-            if data_reservasi.empty:
-                print("⚠️ Belum ada data reservasi.")
-            else:
-                print(data_reservasi.to_string(index=False))
-                print("="*78)
+            print(data_reservasi[["id", "nm_tamu", "no_kamar", "total_harga", "status"]].to_string(index=False))
+            print("="*78)
 
         elif pilih_tampilan == 2:
             print("\n" + "="*78)
@@ -132,7 +141,7 @@ def tampilkan_history():
                 else:
                     print("\n✅ Data ditemukan:")
                     print(cari.to_string(index=False))
-                    print("="*78)   
+                    print("="*78)
                     break
 
         elif pilih_tampilan == 5:
@@ -141,7 +150,6 @@ def tampilkan_history():
 
         else:
             print("❌ Pilihan tidak valid.")
-
 
 while True:
     print("\n" + "="*37)
